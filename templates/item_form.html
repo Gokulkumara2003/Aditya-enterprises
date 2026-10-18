@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{% if mode == 'add' %}Register New Electrical Equipment SKU{% else %}Edit {{ item.name }}{% endif %} - ElectroVault{% endblock %}
+{% block title %}{% if mode == 'add' %}Register New Electrical Equipment SKU{% else %}Edit {{ item.name }}{% endif %} - Aditya Enterprises{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -85,10 +85,10 @@
                         <!-- Cost Price -->
                         <div class="col-md-6">
                             <label for="cost_price" class="form-label fw-semibold small text-uppercase">
-                                Purchase Cost Price ($) <span class="text-danger">*</span>
+                                Purchase Cost Price (₹) <span class="text-danger">*</span>
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text bg-light">$</span>
+                                <span class="input-group-text bg-light">₹</span>
                                 <input type="number" step="0.01" class="form-control" id="cost_price" name="cost_price" value="{{ item.cost_price if item else '0.00' }}" min="0" required>
                             </div>
                             <div class="form-text small">Standard wholesale unit purchase cost.</div>
@@ -97,10 +97,10 @@
                         <!-- Selling Price -->
                         <div class="col-md-6">
                             <label for="selling_price" class="form-label fw-semibold small text-uppercase">
-                                Selling / Retail Price ($) <span class="text-danger">*</span>
+                                Selling / Retail Price (₹) <span class="text-danger">*</span>
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text bg-light">$</span>
+                                <span class="input-group-text bg-light">₹</span>
                                 <input type="number" step="0.01" class="form-control" id="selling_price" name="selling_price" value="{{ item.selling_price if item else '0.00' }}" min="0" required>
                             </div>
                             <div class="form-text small">Customer invoice unit price.</div>

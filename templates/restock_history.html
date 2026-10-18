@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Inward Purchase Bills History - ElectroVault{% endblock %}
+{% block title %}Inward Purchase Bills History - Aditya Enterprises{% endblock %}
 
 {% block content %}
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
@@ -25,8 +25,8 @@
                         <th>Supplier / Vendor</th>
                         <th>Item Details</th>
                         <th class="text-center">Units Added</th>
-                        <th class="text-end">Unit Cost</th>
-                        <th class="text-end">Total Bill Amount</th>
+                        <th class="text-end">Unit Cost (₹)</th>
+                        <th class="text-end">Total Bill Amount (₹)</th>
                         <th>Received By</th>
                         <th>Timestamp</th>
                     </tr>
@@ -54,10 +54,10 @@
                                 </span>
                             </td>
                             <td class="text-end text-muted">
-                                ${{ "%.2f"|format(b.unit_purchase_cost) }}
+                                ₹{{ "%.2f"|format(b.unit_purchase_cost) }}
                             </td>
                             <td class="text-end fw-bold text-success">
-                                ${{ "%.2f"|format(b.total_bill_amount) }}
+                                ₹{{ "%.2f"|format(b.total_bill_amount) }}
                             </td>
                             <td>
                                 <span class="small text-muted">{{ b.received_by_name or 'Store Staff' }}</span>

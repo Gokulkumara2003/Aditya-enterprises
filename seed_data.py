@@ -6,30 +6,30 @@ SAMPLE_USERS = [
     {
         'username': 'admin',
         'password': 'Admin@2026!',
-        'full_name': 'Eleanor Vance (Chief Admin)',
+        'full_name': 'Aditya Verma (Chief Admin)',
         'role': 'Admin',
-        'email': 'admin@electrovault.com'
+        'email': 'admin@aditya-enterprises.in'
     },
     {
         'username': 'inventory_mgr',
         'password': 'Inventory#2026',
-        'full_name': 'Marcus Brody (Stock Manager)',
+        'full_name': 'Rajesh Patel (Stock Manager)',
         'role': 'Inventory Manager',
-        'email': 'marcus.stock@electrovault.com'
+        'email': 'rajesh.stock@aditya-enterprises.in'
     },
     {
-        'username': 'clerk_sarah',
+        'username': 'clerk_priya',
         'password': 'Billing$2026',
-        'full_name': 'Sarah Connor (Billing Clerk)',
+        'full_name': 'Priya Sharma (Billing Clerk)',
         'role': 'Billing Clerk',
-        'email': 'sarah.billing@electrovault.com'
+        'email': 'priya.billing@aditya-enterprises.in'
     },
     {
         'username': 'store_rahul',
         'password': 'StoreKeeper*2026',
         'full_name': 'Rahul Sharma (Dispatch & Store)',
         'role': 'Storekeeper',
-        'email': 'rahul.store@electrovault.com'
+        'email': 'rahul.store@aditya-enterprises.in'
     }
 ]
 
@@ -40,8 +40,8 @@ SAMPLE_ITEMS = [
         'name': 'Crompton Aura Prime 1200mm Ceiling Fan (High Speed)',
         'category': 'Ceiling Fans',
         'unit': 'Pieces',
-        'cost_price': 42.00,
-        'selling_price': 58.00,
+        'cost_price': 1850.00,
+        'selling_price': 2450.00,
         'quantity': 28,
         'min_threshold': 8,
         'location': 'Aisle 1-A',
@@ -52,8 +52,8 @@ SAMPLE_ITEMS = [
         'name': 'Havells Swing LX 400mm Pedestal Standing Fan',
         'category': 'Standing Fans',
         'unit': 'Pieces',
-        'cost_price': 35.00,
-        'selling_price': 49.00,
+        'cost_price': 2200.00,
+        'selling_price': 2890.00,
         'quantity': 15,
         'min_threshold': 5,
         'location': 'Aisle 1-B',
@@ -64,8 +64,8 @@ SAMPLE_ITEMS = [
         'name': 'Usha Maxx Air 300mm Wall Mount Exhaust Fan',
         'category': 'Exhaust Fans',
         'unit': 'Pieces',
-        'cost_price': 18.50,
-        'selling_price': 27.00,
+        'cost_price': 1150.00,
+        'selling_price': 1550.00,
         'quantity': 22,
         'min_threshold': 6,
         'location': 'Aisle 1-C',
@@ -76,8 +76,8 @@ SAMPLE_ITEMS = [
         'name': 'Orient Smart 1200mm BLDC Fan with Remote',
         'category': 'Ceiling Fans',
         'unit': 'Pieces',
-        'cost_price': 55.00,
-        'selling_price': 79.00,
+        'cost_price': 2650.00,
+        'selling_price': 3490.00,
         'quantity': 14,
         'min_threshold': 4,
         'location': 'Aisle 1-A',
@@ -88,8 +88,8 @@ SAMPLE_ITEMS = [
         'name': 'Atomberg Renesa 1200mm 5-Star BLDC Fan (Wood Finish)',
         'category': 'Ceiling Fans',
         'unit': 'Pieces',
-        'cost_price': 62.00,
-        'selling_price': 89.00,
+        'cost_price': 3150.00,
+        'selling_price': 4190.00,
         'quantity': 4,  # Intentionally low stock to showcase dynamics!
         'min_threshold': 6,
         'location': 'Aisle 1-A',
@@ -102,8 +102,8 @@ SAMPLE_ITEMS = [
         'name': 'Daikin 1.5 Ton 5-Star Inverter Split AC (PM2.5 Filter)',
         'category': 'Air Conditioners',
         'unit': 'Pieces',
-        'cost_price': 480.00,
-        'selling_price': 599.00,
+        'cost_price': 36500.00,
+        'selling_price': 44990.00,
         'quantity': 8,
         'min_threshold': 3,
         'location': 'Warehouse Bay 3',
@@ -114,8 +114,8 @@ SAMPLE_ITEMS = [
         'name': 'Voltas 1.0 Ton 3-Star Window AC (Copper Condenser)',
         'category': 'Air Conditioners',
         'unit': 'Pieces',
-        'cost_price': 290.00,
-        'selling_price': 369.00,
+        'cost_price': 23500.00,
+        'selling_price': 28990.00,
         'quantity': 6,
         'min_threshold': 2,
         'location': 'Warehouse Bay 3',
@@ -126,8 +126,8 @@ SAMPLE_ITEMS = [
         'name': 'LG 1.5 Ton Dual Inverter Split AC (6-in-1 AI Convertible)',
         'category': 'Air Conditioners',
         'unit': 'Pieces',
-        'cost_price': 510.00,
-        'selling_price': 649.00,
+        'cost_price': 37500.00,
+        'selling_price': 45990.00,
         'quantity': 11,
         'min_threshold': 4,
         'location': 'Warehouse Bay 3',
@@ -138,8 +138,8 @@ SAMPLE_ITEMS = [
         'name': 'Blue Star 2.0 Ton Heavy Duty Inverter Split AC',
         'category': 'Air Conditioners',
         'unit': 'Pieces',
-        'cost_price': 680.00,
-        'selling_price': 849.00,
+        'cost_price': 49000.00,
+        'selling_price': 59990.00,
         'quantity': 2,  # Low stock
         'min_threshold': 3,
         'location': 'Warehouse Bay 4',
@@ -152,20 +152,20 @@ SAMPLE_ITEMS = [
         'name': 'Philips 9W Cool Day LED Bulb (B22 Base, Pack of 4)',
         'category': 'Lighting',
         'unit': 'Packs',
-        'cost_price': 5.20,
-        'selling_price': 8.50,
+        'cost_price': 280.00,
+        'selling_price': 399.00,
         'quantity': 110,
         'min_threshold': 25,
         'location': 'Aisle 2-A',
-        'description': '825 Lumens energy-saving warm white LED bulbs with surge protection up to 4kV.'
+        'description': '825 Lumens energy-saving cool day white LED bulbs with surge protection up to 4kV.'
     },
     {
         'sku': 'LGT-SYS-TBAT20',
         'name': 'Syska 20W LED T-Bulb Batten (Angle Adjustable)',
         'category': 'Lighting',
         'unit': 'Pieces',
-        'cost_price': 4.50,
-        'selling_price': 7.50,
+        'cost_price': 240.00,
+        'selling_price': 349.00,
         'quantity': 55,
         'min_threshold': 15,
         'location': 'Aisle 2-B',
@@ -176,8 +176,8 @@ SAMPLE_ITEMS = [
         'name': 'Wipro 15W Slim Round Concealed LED Downlight Panel',
         'category': 'Lighting',
         'unit': 'Pieces',
-        'cost_price': 6.00,
-        'selling_price': 9.80,
+        'cost_price': 320.00,
+        'selling_price': 450.00,
         'quantity': 45,
         'min_threshold': 12,
         'location': 'Aisle 2-C',
@@ -188,8 +188,8 @@ SAMPLE_ITEMS = [
         'name': 'Havells 50W Outdoor Industrial LED Flood Light (IP66)',
         'category': 'Lighting',
         'unit': 'Pieces',
-        'cost_price': 24.00,
-        'selling_price': 38.00,
+        'cost_price': 1450.00,
+        'selling_price': 2150.00,
         'quantity': 16,
         'min_threshold': 5,
         'location': 'Aisle 2-D',
@@ -200,8 +200,8 @@ SAMPLE_ITEMS = [
         'name': 'Smart RGB WiFi 5-Meter Ambient LED Strip Light',
         'category': 'Lighting',
         'unit': 'Rolls',
-        'cost_price': 12.00,
-        'selling_price': 19.99,
+        'cost_price': 650.00,
+        'selling_price': 999.00,
         'quantity': 32,
         'min_threshold': 8,
         'location': 'Aisle 2-E',
@@ -214,8 +214,8 @@ SAMPLE_ITEMS = [
         'name': 'Anchor Roma 6A 1-Way Modular Switch (Arctic White)',
         'category': 'Switches & Sockets',
         'unit': 'Pieces',
-        'cost_price': 0.85,
-        'selling_price': 1.60,
+        'cost_price': 32.00,
+        'selling_price': 48.00,
         'quantity': 240,
         'min_threshold': 50,
         'location': 'Aisle 3-A',
@@ -226,8 +226,8 @@ SAMPLE_ITEMS = [
         'name': 'Schneider Electric 16A Power Socket with Safety Shutter',
         'category': 'Switches & Sockets',
         'unit': 'Pieces',
-        'cost_price': 2.10,
-        'selling_price': 3.80,
+        'cost_price': 110.00,
+        'selling_price': 165.00,
         'quantity': 115,
         'min_threshold': 25,
         'location': 'Aisle 3-A',
@@ -238,8 +238,8 @@ SAMPLE_ITEMS = [
         'name': 'Havells 32A Double Pole Miniature Circuit Breaker (MCB)',
         'category': 'Circuit Breakers',
         'unit': 'Pieces',
-        'cost_price': 7.50,
-        'selling_price': 12.50,
+        'cost_price': 380.00,
+        'selling_price': 560.00,
         'quantity': 32,
         'min_threshold': 10,
         'location': 'Aisle 3-C',
@@ -250,8 +250,8 @@ SAMPLE_ITEMS = [
         'name': 'L&T 63A 4-Pole 30mA Residual Current Circuit Breaker (RCCB)',
         'category': 'Circuit Breakers',
         'unit': 'Pieces',
-        'cost_price': 28.00,
-        'selling_price': 42.00,
+        'cost_price': 2400.00,
+        'selling_price': 3250.00,
         'quantity': 8,
         'min_threshold': 3,
         'location': 'Aisle 3-C',
@@ -264,8 +264,8 @@ SAMPLE_ITEMS = [
         'name': 'Polycab 1.5 sq mm Flame Retardant Copper Wire (90m Roll)',
         'category': 'Wires & Cables',
         'unit': 'Rolls',
-        'cost_price': 21.00,
-        'selling_price': 31.00,
+        'cost_price': 1450.00,
+        'selling_price': 1950.00,
         'quantity': 38,
         'min_threshold': 10,
         'location': 'Aisle 4-A',
@@ -276,8 +276,8 @@ SAMPLE_ITEMS = [
         'name': 'Polycab 2.5 sq mm FR House Wire (90m Roll, Blue)',
         'category': 'Wires & Cables',
         'unit': 'Rolls',
-        'cost_price': 34.00,
-        'selling_price': 49.00,
+        'cost_price': 2350.00,
+        'selling_price': 3100.00,
         'quantity': 26,
         'min_threshold': 8,
         'location': 'Aisle 4-A',
@@ -288,8 +288,8 @@ SAMPLE_ITEMS = [
         'name': 'Finolex 4.0 sq mm Heavy Duty Cable (90m Roll, Black)',
         'category': 'Wires & Cables',
         'unit': 'Rolls',
-        'cost_price': 52.00,
-        'selling_price': 74.00,
+        'cost_price': 3600.00,
+        'selling_price': 4750.00,
         'quantity': 3,  # Low stock
         'min_threshold': 5,
         'location': 'Aisle 4-B',
@@ -302,8 +302,8 @@ SAMPLE_ITEMS = [
         'name': 'V-Guard VG 400 Voltage Stabilizer for 1.5 Ton AC',
         'category': 'Stabilizers & Power',
         'unit': 'Pieces',
-        'cost_price': 38.00,
-        'selling_price': 56.00,
+        'cost_price': 2100.00,
+        'selling_price': 2850.00,
         'quantity': 15,
         'min_threshold': 4,
         'location': 'Aisle 5-A',
@@ -314,8 +314,8 @@ SAMPLE_ITEMS = [
         'name': 'Microtek EML 5090 Digital Mainline Voltage Stabilizer (5kVA)',
         'category': 'Stabilizers & Power',
         'unit': 'Pieces',
-        'cost_price': 115.00,
-        'selling_price': 165.00,
+        'cost_price': 7800.00,
+        'selling_price': 10500.00,
         'quantity': 5,
         'min_threshold': 2,
         'location': 'Aisle 5-B',
@@ -372,7 +372,7 @@ def seed_database():
                 cursor.execute(
                     """INSERT INTO purchase_bills (bill_number, supplier_name, supplier_invoice_ref, item_id, quantity_added, unit_purchase_cost, total_bill_amount, notes, received_by_name, created_at)
                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now', '-3 days'))""",
-                    (bill_no, 'Crompton Greaves National Distribution', 'CG-INV-9941', fan['id'], added_qty, fan['cost_price'], tot, 'Scheduled monthly restock batch', 'Marcus Brody')
+                    (bill_no, 'Crompton Greaves Consumer Electricals Ltd (Mumbai Depot)', 'CG-INV-2026-9941', fan['id'], added_qty, fan['cost_price'], tot, 'Scheduled monthly restock batch - GST E-way bill verified', 'Rajesh Patel')
                 )
 
             # Create sample sales invoice to demonstrate dynamic outward billing
@@ -385,12 +385,12 @@ def seed_database():
                 inv_no = "INV-20261017-001"
                 subtotal = (1 * ac['selling_price']) + (1 * stab['selling_price'])
                 tax = round(subtotal * 0.18, 2)
-                discount = 25.00
+                discount = 1500.00
                 grand = subtotal + tax - discount
                 cursor.execute(
                     """INSERT INTO invoices (invoice_number, customer_name, customer_phone, customer_email, customer_address, payment_method, subtotal, tax_rate, tax_amount, discount_amount, grand_total, notes, created_by_name, created_at)
                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now', '-1 days'))""",
-                    (inv_no, 'David Miller Commercial Projects', '+1 (555) 234-8901', 'david.m@constructcorp.com', 'Suite 404, Metro Plaza', 'Credit Card', subtotal, 18.0, tax, discount, grand, 'HVAC equipment for boardroom installation', 'Sarah Connor')
+                    (inv_no, 'Sharma Electricals & Commercial Projects', '+91 98450 12345', 'accounts@sharmaelectricals.in', '#42, 3rd Phase, Peenya Industrial Area, Bengaluru, Karnataka - 560058', 'UPI / QR Payment', subtotal, 18.0, tax, discount, grand, 'HVAC split AC and voltage stabilizer for commercial facility installation', 'Priya Sharma')
                 )
                 inv_id = cursor.lastrowid
                 
@@ -409,12 +409,12 @@ def seed_database():
                 cursor.execute(
                     """INSERT INTO inventory_logs (item_id, item_name, item_sku, action_type, quantity_change, previous_stock, new_stock, reference_id, unit_price, user_name, notes, created_at)
                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now', '-1 days'))""",
-                    (ac['id'], ac['name'], ac['sku'], 'SALE', -1, 9, 8, inv_no, ac['selling_price'], 'Sarah Connor', 'Customer order fulfilled')
+                    (ac['id'], ac['name'], ac['sku'], 'SALE', -1, 9, 8, inv_no, ac['selling_price'], 'Priya Sharma', 'Customer order fulfilled')
                 )
                 cursor.execute(
                     """INSERT INTO inventory_logs (item_id, item_name, item_sku, action_type, quantity_change, previous_stock, new_stock, reference_id, unit_price, user_name, notes, created_at)
                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now', '-1 days'))""",
-                    (stab['id'], stab['name'], stab['sku'], 'SALE', -1, 16, 15, inv_no, stab['selling_price'], 'Sarah Connor', 'Customer order fulfilled')
+                    (stab['id'], stab['name'], stab['sku'], 'SALE', -1, 16, 15, inv_no, stab['selling_price'], 'Priya Sharma', 'Customer order fulfilled')
                 )
 
             print("Sample bills and transactions seeded successfully.")

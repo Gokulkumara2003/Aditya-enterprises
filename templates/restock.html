@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Restock Inventory (Inward Purchase Bill) - ElectroVault{% endblock %}
+{% block title %}Restock Inventory (Inward Purchase Bill) - Aditya Enterprises{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -55,7 +55,7 @@
                                 </div>
                                 <div>
                                     <span class="text-muted small text-uppercase fw-semibold">Last Recorded Cost</span>
-                                    <div class="h5 fw-bold mb-0 text-primary">$<span id="previewCost">0.00</span></div>
+                                    <div class="h5 fw-bold mb-0 text-primary">₹<span id="previewCost">0.00</span></div>
                                 </div>
                                 <div>
                                     <span class="text-muted small text-uppercase fw-semibold">SKU Code</span>
@@ -79,10 +79,10 @@
                         <!-- Unit Purchase Cost -->
                         <div class="col-md-6">
                             <label for="unit_purchase_cost" class="form-label fw-semibold small text-uppercase">
-                                Unit Purchase Cost ($) <span class="text-danger">*</span>
+                                Unit Purchase Cost (₹) <span class="text-danger">*</span>
                             </label>
                             <div class="input-group">
-                                <span class="input-group-text bg-light">$</span>
+                                <span class="input-group-text bg-light">₹</span>
                                 <input type="number" step="0.01" class="form-control form-control-lg" id="unit_purchase_cost" name="unit_purchase_cost" min="0" placeholder="0.00" required oninput="calculateInwardBill()">
                             </div>
                             <div class="form-text small">Unit rate billed by the distributor/manufacturer.</div>
@@ -95,7 +95,7 @@
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light"><i class="fa-solid fa-truck-field text-muted"></i></span>
-                                <input type="text" class="form-control" id="supplier_name" name="supplier_name" placeholder="e.g. Havells India Ltd / Crompton Distribution" required>
+                                <input type="text" class="form-control" id="supplier_name" name="supplier_name" placeholder="e.g. Havells India Ltd / Crompton Distribution / Polycab Depot" required>
                             </div>
                         </div>
 
@@ -106,7 +106,7 @@
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light"><i class="fa-solid fa-file-invoice text-muted"></i></span>
-                                <input type="text" class="form-control" id="supplier_invoice_ref" name="supplier_invoice_ref" placeholder="e.g. SUP-INV-88741">
+                                <input type="text" class="form-control" id="supplier_invoice_ref" name="supplier_invoice_ref" placeholder="e.g. CG-GST-2026-9812">
                             </div>
                         </div>
 
@@ -118,7 +118,7 @@
                                     <div class="text-muted small">Calculated as (Units Received &times; Unit Purchase Cost)</div>
                                 </div>
                                 <div class="h3 fw-bold text-success mb-0">
-                                    $<span id="totalBillDisplay">0.00</span>
+                                    ₹<span id="totalBillDisplay">0.00</span>
                                 </div>
                             </div>
                         </div>

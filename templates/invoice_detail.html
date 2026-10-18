@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Tax Invoice #{{ invoice.invoice_number }} - ElectroVault{% endblock %}
+{% block title %}Tax Invoice #{{ invoice.invoice_number }} - Aditya Enterprises{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4 no-print">
@@ -26,13 +26,13 @@
                 <span class="p-2 rounded bg-primary text-white d-inline-flex align-items-center justify-content-center shadow-sm">
                     <i class="fa-solid fa-bolt text-warning fs-4"></i>
                 </span>
-                <span class="invoice-header-title">Electro<span class="text-primary">Vault</span></span>
+                <span class="invoice-header-title">Aditya<span class="text-primary"> Enterprises</span></span>
             </div>
             <div class="text-muted small">
-                <strong>ElectroVault Electrical & Industrial Equipment Ltd.</strong><br>
-                Plot 48, Power Grid Industrial Estate, Sector 12<br>
-                Phone: +1 (800) 555-ELEC &bull; Support: billing@electrovault.com<br>
-                <strong>GSTIN / Tax ID:</strong> 29AAAAA1234A1Z9 &bull; State Code: 29
+                <strong>Aditya Enterprises - Electrical & Industrial Equipment</strong><br>
+                Plot 48, Power Grid Industrial Estate, Peenya 2nd Stage, Bengaluru, Karnataka - 560058<br>
+                Phone: +91 98765 43210 &bull; Support: billing@aditya-enterprises.in<br>
+                <strong>GSTIN:</strong> 29AAAAA1234A1Z9 &bull; State Code: 29 (Karnataka)
             </div>
         </div>
 
@@ -68,7 +68,7 @@
         <div class="col-sm-5 text-sm-end mt-3 mt-sm-0">
             <div class="p-3 bg-light rounded-3 border text-sm-end">
                 <div class="invoice-meta-label">Total Amount Paid</div>
-                <div class="h2 fw-bold text-success mb-0">${{ "%.2f"|format(invoice.grand_total) }}</div>
+                <div class="h2 fw-bold text-success mb-0">₹{{ "%.2f"|format(invoice.grand_total) }}</div>
                 <div class="small text-muted">All Taxes & Levies Included</div>
             </div>
         </div>
@@ -83,8 +83,8 @@
                     <th>Equipment Description</th>
                     <th>SKU / Category</th>
                     <th class="text-center" style="width: 100px;">Qty</th>
-                    <th class="text-end" style="width: 130px;">Unit Rate</th>
-                    <th class="text-end" style="width: 140px;">Amount ($)</th>
+                    <th class="text-end" style="width: 130px;">Unit Rate (₹)</th>
+                    <th class="text-end" style="width: 140px;">Amount (₹)</th>
                 </tr>
             </thead>
             <tbody>
@@ -104,10 +104,10 @@
                         {{ item.quantity }} {{ item.item_unit or 'Units' }}
                     </td>
                     <td class="text-end text-muted">
-                        ${{ "%.2f"|format(item.unit_price) }}
+                        ₹{{ "%.2f"|format(item.unit_price) }}
                     </td>
                     <td class="text-end fw-bold text-dark">
-                        ${{ "%.2f"|format(item.total_price) }}
+                        ₹{{ "%.2f"|format(item.total_price) }}
                     </td>
                 </tr>
                 {% endfor %}
@@ -128,9 +128,9 @@
             <div class="small text-muted">
                 <strong>Standard Terms of Sale:</strong>
                 <ol class="ps-3 mb-0 mt-1" style="font-size: 0.78rem;">
-                    <li>Electrical equipment warranties are backed directly by the manufacturer (Crompton, Havells, Daikin, Philips).</li>
-                    <li>Items returned must be in uninstalled original packaging within 7 days.</li>
-                    <li>Wire coils and custom-cut cables are non-returnable once dispatched.</li>
+                    <li>Electrical equipment warranties are backed directly by the manufacturer (Crompton, Havells, Daikin, Philips, Polycab).</li>
+                    <li>Items returned must be in uninstalled original packaging with tax invoice within 7 days.</li>
+                    <li>Wire coils and custom-cut cables are non-returnable once measured and dispatched.</li>
                 </ol>
             </div>
         </div>
@@ -139,21 +139,21 @@
             <table class="table table-sm table-borderless text-end mb-0">
                 <tr>
                     <td class="text-muted">Subtotal (Pre-tax):</td>
-                    <td class="fw-semibold text-dark">${{ "%.2f"|format(invoice.subtotal) }}</td>
+                    <td class="fw-semibold text-dark">₹{{ "%.2f"|format(invoice.subtotal) }}</td>
                 </tr>
                 <tr>
-                    <td class="text-muted">GST / Sales Tax ({{ invoice.tax_rate }}%):</td>
-                    <td class="fw-semibold text-dark">${{ "%.2f"|format(invoice.tax_amount) }}</td>
+                    <td class="text-muted">GST ({{ invoice.tax_rate }}%):</td>
+                    <td class="fw-semibold text-dark">₹{{ "%.2f"|format(invoice.tax_amount) }}</td>
                 </tr>
                 {% if invoice.discount_amount > 0 %}
                 <tr>
                     <td class="text-muted">Commercial Discount:</td>
-                    <td class="fw-semibold text-danger">-${{ "%.2f"|format(invoice.discount_amount) }}</td>
+                    <td class="fw-semibold text-danger">-₹{{ "%.2f"|format(invoice.discount_amount) }}</td>
                 </tr>
                 {% endif %}
                 <tr class="border-top">
                     <td class="h5 fw-bold text-dark pt-2">Grand Total:</td>
-                    <td class="h5 fw-bold text-success pt-2">${{ "%.2f"|format(invoice.grand_total) }}</td>
+                    <td class="h5 fw-bold text-success pt-2">₹{{ "%.2f"|format(invoice.grand_total) }}</td>
                 </tr>
             </table>
         </div>
@@ -164,7 +164,7 @@
         <div class="col-sm-6 mb-3 mb-sm-0">
             <div class="invoice-stamp">
                 <i class="fa-solid fa-stamp text-primary me-2"></i>
-                <span class="small fw-bold text-uppercase">ElectroVault Verified Official Dispatch</span>
+                <span class="small fw-bold text-uppercase">Aditya Enterprises Verified Official Dispatch</span>
             </div>
         </div>
         <div class="col-sm-6 text-sm-end">

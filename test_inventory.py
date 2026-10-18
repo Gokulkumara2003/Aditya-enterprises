@@ -33,11 +33,13 @@ class InventorySystemTestCase(unittest.TestCase):
         # Successful admin login
         res = self.login('admin', 'Admin@2026!')
         self.assertIn(b"Inventory Dynamics & Operations", res.data)
-        self.assertIn(b"Eleanor Vance", res.data)
+        self.assertIn(b"Aditya Verma", res.data)
+
+        self.logout()
 
         # Successful clerk login
-        res = self.login('clerk_sarah', 'Billing$2026')
-        self.assertIn(b"Sarah Connor", res.data)
+        res = self.login('clerk_priya', 'Billing$2026')
+        self.assertIn(b"Priya Sharma", res.data)
         self.assertIn(b"Billing Clerk", res.data)
 
     def test_02_dashboard_and_seeded_items(self):
@@ -60,8 +62,8 @@ class InventorySystemTestCase(unittest.TestCase):
             name='Orient Aeroquiet 1200mm Silent Ceiling Fan',
             category='Ceiling Fans',
             unit='Pieces',
-            cost_price='48.00',
-            selling_price='68.00',
+            cost_price='1950.00',
+            selling_price='2650.00',
             quantity='15',
             min_threshold='5',
             location='Aisle 1-D',
@@ -77,7 +79,7 @@ class InventorySystemTestCase(unittest.TestCase):
             row = cursor.fetchone()
             self.assertIsNotNone(row)
             self.assertEqual(row['quantity'], 15)
-            self.assertEqual(row['selling_price'], 68.00)
+            self.assertEqual(row['selling_price'], 2650.00)
 
     def test_04_restock_existing_item(self):
         """Test replenishing an existing item with inward purchase bill"""
@@ -94,7 +96,7 @@ class InventorySystemTestCase(unittest.TestCase):
         res = self.client.post('/restock', data=dict(
             item_id=item_id,
             quantity_added='10',
-            unit_purchase_cost='41.50',
+            unit_purchase_cost='1820.00',
             supplier_name='Crompton National Warehousing',
             supplier_invoice_ref='CNW-2026-OCT-88',
             update_cost_price='yes',
@@ -109,11 +111,11 @@ class InventorySystemTestCase(unittest.TestCase):
             cursor.execute("SELECT quantity, cost_price FROM items WHERE id = ?", (item_id,))
             updated_item = cursor.fetchone()
             self.assertEqual(updated_item['quantity'], initial_qty + 10)
-            self.assertEqual(updated_item['cost_price'], 41.50)
+            self.assertEqual(updated_item['cost_price'], 1820.00)
 
     def test_05_customer_billing_and_stock_removal(self):
         """Test removing stock with customer invoice and tax calculations"""
-        self.login('clerk_sarah', 'Billing$2026')
+        self.login('clerk_priya', 'Billing$2026')
 
         with get_db() as conn:
             cursor = conn.cursor()
@@ -123,21 +125,21 @@ class InventorySystemTestCase(unittest.TestCase):
 
         # Create invoice for 2 packs
         res = self.client.post('/billing', data={
-            'customer_name': 'Horizon Electrical Contractors',
-            'customer_phone': '+1 (555) 987-6543',
-            'customer_email': 'procurement@horizonelec.com',
-            'customer_address': '45 Industrial Blvd, Sector 8',
-            'payment_method': 'Credit Card',
+            'customer_name': 'Sharma Electrical Contractors Ltd',
+            'customer_phone': '+91 98765 43210',
+            'customer_email': 'procurement@sharmaelec.in',
+            'customer_address': 'Plot 45, Peenya Industrial Area, Bengaluru',
+            'payment_method': 'UPI / QR Payment',
             'tax_rate': '18.0',
-            'discount_amount': '2.50',
+            'discount_amount': '50.00',
             'item_id[]': [str(bulb['id'])],
             'quantity[]': ['2'],
             'unit_price[]': [str(bulb['selling_price'])],
-            'notes': 'Supplied for office floor lighting renovation'
+            'notes': 'Supplied for commercial office floor lighting renovation'
         }, follow_redirects=True)
 
         self.assertIn(b"ORIGINAL TAX INVOICE", res.data)
-        self.assertIn(b"Horizon Electrical Contractors", res.data)
+        self.assertIn(b"Sharma Electrical Contractors Ltd", res.data)
 
         # Verify stock decrement
         with get_db() as conn:
