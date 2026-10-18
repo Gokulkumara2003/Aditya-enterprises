@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}Restock Inventory (Inward Purchase Bill) - ElectroVault{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-9 col-xl-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="h5 fw-bold mb-0 text-success">
+                        <i class="fa-solid fa-dolly me-2"></i> Inward Restock Entry (Purchase Bill)
+                    </h4>
+                    <p class="text-muted small mb-0">Replenish existing electrical equipment with supplier purchase documentation.</p>
+                </div>
+                <a href="{{ url_for('restock_history') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="fa-solid fa-file-invoice me-1"></i> View Inward Bills
+                </a>
+            </div>
+
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('restock_item') }}" id="restockForm">
+                    <div class="row g-3">
+                        <!-- Select Existing Item -->
+                        <div class="col-12">
+                            <label for="item_id" class="form-label fw-semibold small text-uppercase">
+                                Select Existing Inventory Equipment <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select form-select-lg" id="item_id" name="item_id" required onchange="onItemSelected()">
+                                <option value="" disabled {% if not preselect_id %}selected{% endif %}>-- Choose an equipment SKU from inventory --</option>
+                                {% for itm in items %}
+                                <option value="{{ itm.id }}" 
+                                        data-sku="{{ itm.sku }}" 
+                                        data-name="{{ itm.name }}" 
+                                        data-cost="{{ itm.cost_price }}" 
+                                        data-qty="{{ itm.quantity }}" 
+                                        data-unit="{{ itm.unit }}" 
+                                        data-thresh="{{ itm.min_threshold }}"
+                                        {% if preselect_id == itm.id %}selected{% endif %}>
+                                    {{ itm.name }} (SKU: {{ itm.sku }}) &mdash; In Stock: {{ itm.quantity }} {{ itm.unit }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Current Stock Indicator Panel -->
+                        <div class="col-12" id="stockPreviewPanel" style="display: none;">
+                            <div class="p-3 bg-light rounded-3 border d-flex flex-wrap justify-content-between align-items-center gap-2">
+                                <div>
+                                    <span class="text-muted small text-uppercase fw-semibold">Current Stock Status</span>
+                                    <div class="h5 fw-bold mb-0 text-dark">
+                                        <span id="previewQty">0</span> <span id="previewUnit">Pieces</span>
+                                        <span id="previewBadge" class="badge ms-2"></span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="text-muted small text-uppercase fw-semibold">Last Recorded Cost</span>
+                                    <div class="h5 fw-bold mb-0 text-primary">$<span id="previewCost">0.00</span></div>
+                                </div>
+                                <div>
+                                    <span class="text-muted small text-uppercase fw-semibold">SKU Code</span>
+                                    <div class="h5 fw-bold mb-0 font-monospace text-secondary" id="previewSku">---</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quantity to Add -->
+                        <div class="col-md-6">
+                            <label for="quantity_added" class="form-label fw-semibold small text-uppercase">
+                                Quantity Received <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-plus text-success"></i></span>
+                                <input type="number" class="form-control form-control-lg" id="quantity_added" name="quantity_added" min="1" placeholder="e.g. 20" required oninput="calculateInwardBill()">
+                            </div>
+                            <div class="form-text small">Number of units delivered and inspected.</div>
+                        </div>
+
+                        <!-- Unit Purchase Cost -->
+                        <div class="col-md-6">
+                            <label for="unit_purchase_cost" class="form-label fw-semibold small text-uppercase">
+                                Unit Purchase Cost ($) <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">$</span>
+                                <input type="number" step="0.01" class="form-control form-control-lg" id="unit_purchase_cost" name="unit_purchase_cost" min="0" placeholder="0.00" required oninput="calculateInwardBill()">
+                            </div>
+                            <div class="form-text small">Unit rate billed by the distributor/manufacturer.</div>
+                        </div>
+
+                        <!-- Supplier Name -->
+                        <div class="col-md-6">
+                            <label for="supplier_name" class="form-label fw-semibold small text-uppercase">
+                                Supplier / Vendor Name <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-truck-field text-muted"></i></span>
+                                <input type="text" class="form-control" id="supplier_name" name="supplier_name" placeholder="e.g. Havells India Ltd / Crompton Distribution" required>
+                            </div>
+                        </div>
+
+                        <!-- Supplier Invoice Reference Number -->
+                        <div class="col-md-6">
+                            <label for="supplier_invoice_ref" class="form-label fw-semibold small text-uppercase">
+                                Supplier Bill / DC Reference #
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-file-invoice text-muted"></i></span>
+                                <input type="text" class="form-control" id="supplier_invoice_ref" name="supplier_invoice_ref" placeholder="e.g. SUP-INV-88741">
+                            </div>
+                        </div>
+
+                        <!-- Total Bill Preview Banner -->
+                        <div class="col-12">
+                            <div class="p-3 bg-success bg-opacity-10 border border-success border-opacity-25 rounded-3 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-bold text-success">Total Inward Restock Bill Amount:</div>
+                                    <div class="text-muted small">Calculated as (Units Received &times; Unit Purchase Cost)</div>
+                                </div>
+                                <div class="h3 fw-bold text-success mb-0">
+                                    $<span id="totalBillDisplay">0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Update base cost checkbox -->
+                        <div class="col-12">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="update_cost_price" name="update_cost_price" value="yes" checked>
+                                <label class="form-check-label fw-semibold text-dark" for="update_cost_price">
+                                    Update standard inventory cost price with this new purchase rate
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="col-12">
+                            <label for="notes" class="form-label fw-semibold small text-uppercase">
+                                Receiving Remarks & Batch Notes
+                            </label>
+                            <textarea class="form-control" id="notes" name="notes" rows="2" placeholder="Inspection status, batch numbers, freight charges, warehouse bay..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                        <a href="{{ url_for('inventory_list') }}" class="btn btn-light">Cancel</a>
+                        <button type="submit" class="btn btn-success px-4 py-2 fw-semibold">
+                            <i class="fa-solid fa-clipboard-check me-2"></i> Finalize Restock & Generate Bill
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function onItemSelected() {
+        const select = document.getElementById('item_id');
+        const selected = select.options[select.selectedIndex];
+        if (!selected || !selected.value) return;
+
+        const sku = selected.getAttribute('data-sku');
+        const cost = parseFloat(selected.getAttribute('data-cost')) || 0;
+        const qty = parseInt(selected.getAttribute('data-qty')) || 0;
+        const unit = selected.getAttribute('data-unit') || 'Pieces';
+        const thresh = parseInt(selected.getAttribute('data-thresh')) || 5;
+
+        document.getElementById('stockPreviewPanel').style.display = 'block';
+        document.getElementById('previewSku').innerText = sku;
+        document.getElementById('previewQty').innerText = qty;
+        document.getElementById('previewUnit').innerText = unit;
+        document.getElementById('previewCost').innerText = cost.toFixed(2);
+
+        const badge = document.getElementById('previewBadge');
+        if (qty <= 0) {
+            badge.className = 'badge badge-stock-out ms-2';
+            badge.innerText = 'Out of Stock';
+        } else if (qty <= thresh) {
+            badge.className = 'badge badge-stock-low ms-2';
+            badge.innerText = 'Low Stock Alert';
+        } else {
+            badge.className = 'badge badge-stock-in ms-2';
+            badge.innerText = 'Healthy Stock';
+        }
+
+        const costInput = document.getElementById('unit_purchase_cost');
+        if (!costInput.value || costInput.value == '0') {
+            costInput.value = cost.toFixed(2);
+        }
+
+        calculateInwardBill();
+    }
+
+    function calculateInwardBill() {
+        const qty = parseFloat(document.getElementById('quantity_added').value) || 0;
+        const unitCost = parseFloat(document.getElementById('unit_purchase_cost').value) || 0;
+        const total = (qty * unitCost).toFixed(2);
+        document.getElementById('totalBillDisplay').innerText = total;
+    }
+
+    // Trigger on page load if preselected
+    window.addEventListener('DOMContentLoaded', () => {
+        onItemSelected();
+    });
+</script>
+{% endblock %}

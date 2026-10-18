@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Inward Purchase Bills History - ElectroVault{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h2 class="h3 fw-bold mb-1">Inward Restock Bills Ledger</h2>
+        <p class="text-muted small mb-0">Record of all supplier shipments, replenishments, and inward purchase invoices.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('restock_item') }}" class="btn btn-success shadow-sm">
+            <i class="fa-solid fa-plus me-1"></i> New Restock Entry
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Bill #</th>
+                        <th>Supplier / Vendor</th>
+                        <th>Item Details</th>
+                        <th class="text-center">Units Added</th>
+                        <th class="text-end">Unit Cost</th>
+                        <th class="text-end">Total Bill Amount</th>
+                        <th>Received By</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if bills %}
+                        {% for b in bills %}
+                        <tr>
+                            <td>
+                                <span class="badge bg-light text-dark border font-monospace">{{ b.bill_number }}</span>
+                                {% if b.supplier_invoice_ref %}
+                                <div class="text-muted small" style="font-size: 0.74rem;">Ref: {{ b.supplier_invoice_ref }}</div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark">{{ b.supplier_name }}</div>
+                            </td>
+                            <td>
+                                <div class="fw-semibold text-dark">{{ b.item_name }}</div>
+                                <div class="text-muted small"><code>{{ b.item_sku }}</code></div>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-success bg-opacity-10 text-success fw-bold px-2 py-1">
+                                    +{{ b.quantity_added }} {{ b.item_unit }}
+                                </span>
+                            </td>
+                            <td class="text-end text-muted">
+                                ${{ "%.2f"|format(b.unit_purchase_cost) }}
+                            </td>
+                            <td class="text-end fw-bold text-success">
+                                ${{ "%.2f"|format(b.total_bill_amount) }}
+                            </td>
+                            <td>
+                                <span class="small text-muted">{{ b.received_by_name or 'Store Staff' }}</span>
+                            </td>
+                            <td>
+                                <span class="small text-muted">{{ b.created_at[:16] }}</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center py-5 text-muted">
+                                <i class="fa-solid fa-dolly fa-3x mb-3 text-secondary opacity-50"></i>
+                                <h5>No inward restock bills recorded yet</h5>
+                                <a href="{{ url_for('restock_item') }}" class="btn btn-primary btn-sm mt-2">Restock an Item</a>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer bg-white border-top py-3 d-flex justify-content-between align-items-center">
+        <span class="text-muted small">Total <strong>{{ bills|length }}</strong> inward purchase transactions recorded</span>
+    </div>
+</div>
+{% endblock %}

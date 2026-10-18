@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In - ElectroVault Secured Inventory{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center py-4">
+    <div class="col-md-9 col-lg-7 col-xl-6">
+        <div class="card shadow-lg border-0 overflow-hidden">
+            <div class="p-4 p-sm-5 bg-white">
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex p-3 rounded-circle bg-primary bg-opacity-10 text-primary mb-3">
+                        <i class="fa-solid fa-shield-halved fa-2x"></i>
+                    </div>
+                    <h3 class="fw-bold mb-1">Restricted Access Portal</h3>
+                    <p class="text-muted small">Finite authorized personnel only. Please sign in with your credentials.</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('login') }}">
+                    <div class="mb-3">
+                        <label for="username" class="form-label fw-semibold small text-uppercase">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-user text-muted"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-1" id="username" name="username" placeholder="Enter authorized username" required autofocus>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-semibold small text-uppercase">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-lock text-muted"></i></span>
+                            <input type="password" class="form-control border-start-0 border-end-0 ps-1" id="password" name="password" placeholder="Enter secure password" required>
+                            <button class="btn btn-outline-secondary border-start-0" type="button" id="togglePasswordBtn">
+                                <i class="fa-regular fa-eye" id="passwordEyeIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm mb-3">
+                        <i class="fa-solid fa-right-to-bracket me-2"></i> Authenticate & Enter
+                    </button>
+                </form>
+
+                <hr class="my-4">
+
+                <!-- Finite User Credentials Quick-Fill Panel -->
+                <div class="bg-light p-3 rounded-3 border">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="fw-bold small text-uppercase text-secondary">
+                            <i class="fa-solid fa-users me-1 text-primary"></i> Finite Authorized Users (Click to Quick-Fill)
+                        </span>
+                        <span class="badge bg-secondary">Pre-seeded</span>
+                    </div>
+                    
+                    <div class="row g-2">
+                        <div class="col-sm-6">
+                            <div class="quick-user-btn" onclick="quickFill('admin', 'Admin@2026!')">
+                                <div class="fw-bold text-dark small"><i class="fa-solid fa-user-shield text-danger me-1"></i> admin</div>
+                                <div class="text-muted" style="font-size: 0.76rem;">Role: System Administrator</div>
+                                <div class="text-primary small" style="font-size: 0.74rem;"><code>Admin@2026!</code></div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="quick-user-btn" onclick="quickFill('inventory_mgr', 'Inventory#2026')">
+                                <div class="fw-bold text-dark small"><i class="fa-solid fa-boxes-packing text-primary me-1"></i> inventory_mgr</div>
+                                <div class="text-muted" style="font-size: 0.76rem;">Role: Inventory Manager</div>
+                                <div class="text-primary small" style="font-size: 0.74rem;"><code>Inventory#2026</code></div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="quick-user-btn" onclick="quickFill('clerk_sarah', 'Billing$2026')">
+                                <div class="fw-bold text-dark small"><i class="fa-solid fa-cash-register text-success me-1"></i> clerk_sarah</div>
+                                <div class="text-muted" style="font-size: 0.76rem;">Role: Billing & Sales Clerk</div>
+                                <div class="text-primary small" style="font-size: 0.74rem;"><code>Billing$2026</code></div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="quick-user-btn" onclick="quickFill('store_rahul', 'StoreKeeper*2026')">
+                                <div class="fw-bold text-dark small"><i class="fa-solid fa-warehouse text-warning me-1"></i> store_rahul</div>
+                                <div class="text-muted" style="font-size: 0.76rem;">Role: Storekeeper & Dispatch</div>
+                                <div class="text-primary small" style="font-size: 0.74rem;"><code>StoreKeeper*2026</code></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function quickFill(user, pass) {
+        document.getElementById('username').value = user;
+        document.getElementById('password').value = pass;
+    }
+
+    const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+    const passwordInput = document.getElementById('password');
+    const passwordEyeIcon = document.getElementById('passwordEyeIcon');
+
+    if (togglePasswordBtn) {
+        togglePasswordBtn.addEventListener('click', function() {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordEyeIcon.classList.remove('fa-eye');
+                passwordEyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                passwordEyeIcon.classList.remove('fa-eye-slash');
+                passwordEyeIcon.classList.add('fa-eye');
+            }
+        });
+    }
+</script>
+{% endblock %}

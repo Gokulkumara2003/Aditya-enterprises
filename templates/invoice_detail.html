@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Tax Invoice #{{ invoice.invoice_number }} - ElectroVault{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 no-print">
+    <a href="{{ url_for('invoice_list') }}" class="btn btn-outline-secondary">
+        <i class="fa-solid fa-arrow-left me-1"></i> Back to All Invoices
+    </a>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('billing') }}" class="btn btn-outline-success">
+            <i class="fa-solid fa-plus me-1"></i> New Sale
+        </a>
+        <button onclick="window.print()" class="btn btn-primary px-4 fw-semibold shadow-sm">
+            <i class="fa-solid fa-print me-2"></i> Print Official Bill
+        </button>
+    </div>
+</div>
+
+<!-- Formal Tax Invoice Box -->
+<div class="invoice-box">
+    <!-- Invoice Header -->
+    <div class="row align-items-center mb-4 pb-3 border-bottom">
+        <div class="col-sm-7">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="p-2 rounded bg-primary text-white d-inline-flex align-items-center justify-content-center shadow-sm">
+                    <i class="fa-solid fa-bolt text-warning fs-4"></i>
+                </span>
+                <span class="invoice-header-title">Electro<span class="text-primary">Vault</span></span>
+            </div>
+            <div class="text-muted small">
+                <strong>ElectroVault Electrical & Industrial Equipment Ltd.</strong><br>
+                Plot 48, Power Grid Industrial Estate, Sector 12<br>
+                Phone: +1 (800) 555-ELEC &bull; Support: billing@electrovault.com<br>
+                <strong>GSTIN / Tax ID:</strong> 29AAAAA1234A1Z9 &bull; State Code: 29
+            </div>
+        </div>
+
+        <div class="col-sm-5 text-sm-end mt-3 mt-sm-0">
+            <span class="badge bg-primary bg-opacity-10 text-primary fs-6 px-3 py-2 mb-2 font-monospace">
+                ORIGINAL TAX INVOICE
+            </span>
+            <div class="h4 fw-bold font-monospace text-dark mb-1">{{ invoice.invoice_number }}</div>
+            <div class="text-muted small">
+                <strong>Date & Time:</strong> {{ invoice.created_at }}<br>
+                <strong>Payment Mode:</strong> <span class="badge bg-success bg-opacity-25 text-success">{{ invoice.payment_method }} (PAID)</span><br>
+                <strong>Billed By:</strong> {{ invoice.created_by_name or 'Cashier Terminal' }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Bill To Details -->
+    <div class="row mb-4">
+        <div class="col-sm-7">
+            <div class="invoice-meta-label mb-1">Billed To Customer:</div>
+            <div class="h5 fw-bold text-dark mb-1">{{ invoice.customer_name }}</div>
+            {% if invoice.customer_phone %}
+            <div class="small text-muted mb-1"><i class="fa-solid fa-phone me-1"></i> {{ invoice.customer_phone }}</div>
+            {% endif %}
+            {% if invoice.customer_email %}
+            <div class="small text-muted mb-1"><i class="fa-solid fa-envelope me-1"></i> {{ invoice.customer_email }}</div>
+            {% endif %}
+            {% if invoice.customer_address %}
+            <div class="small text-muted"><i class="fa-solid fa-location-dot me-1"></i> {{ invoice.customer_address }}</div>
+            {% endif %}
+        </div>
+
+        <div class="col-sm-5 text-sm-end mt-3 mt-sm-0">
+            <div class="p-3 bg-light rounded-3 border text-sm-end">
+                <div class="invoice-meta-label">Total Amount Paid</div>
+                <div class="h2 fw-bold text-success mb-0">${{ "%.2f"|format(invoice.grand_total) }}</div>
+                <div class="small text-muted">All Taxes & Levies Included</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Line Items Table -->
+    <div class="table-responsive mb-4">
+        <table class="table table-bordered align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="text-center" style="width: 50px;">#</th>
+                    <th>Equipment Description</th>
+                    <th>SKU / Category</th>
+                    <th class="text-center" style="width: 100px;">Qty</th>
+                    <th class="text-end" style="width: 130px;">Unit Rate</th>
+                    <th class="text-end" style="width: 140px;">Amount ($)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in line_items %}
+                <tr>
+                    <td class="text-center text-muted small">{{ loop.index }}</td>
+                    <td>
+                        <div class="fw-bold text-dark">{{ item.item_name }}</div>
+                    </td>
+                    <td>
+                        <span class="font-monospace small"><code>{{ item.item_sku }}</code></span>
+                        {% if item.item_category %}
+                        <div class="text-muted small" style="font-size: 0.75rem;">{{ item.item_category }}</div>
+                        {% endif %}
+                    </td>
+                    <td class="text-center fw-semibold">
+                        {{ item.quantity }} {{ item.item_unit or 'Units' }}
+                    </td>
+                    <td class="text-end text-muted">
+                        ${{ "%.2f"|format(item.unit_price) }}
+                    </td>
+                    <td class="text-end fw-bold text-dark">
+                        ${{ "%.2f"|format(item.total_price) }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Financial Calculation Breakdown -->
+    <div class="row align-items-start mb-4">
+        <div class="col-sm-7">
+            {% if invoice.notes %}
+            <div class="p-3 bg-light rounded-3 border mb-3">
+                <span class="invoice-meta-label d-block mb-1">Invoice Remarks & Terms:</span>
+                <div class="small text-dark">{{ invoice.notes }}</div>
+            </div>
+            {% endif %}
+
+            <div class="small text-muted">
+                <strong>Standard Terms of Sale:</strong>
+                <ol class="ps-3 mb-0 mt-1" style="font-size: 0.78rem;">
+                    <li>Electrical equipment warranties are backed directly by the manufacturer (Crompton, Havells, Daikin, Philips).</li>
+                    <li>Items returned must be in uninstalled original packaging within 7 days.</li>
+                    <li>Wire coils and custom-cut cables are non-returnable once dispatched.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="col-sm-5">
+            <table class="table table-sm table-borderless text-end mb-0">
+                <tr>
+                    <td class="text-muted">Subtotal (Pre-tax):</td>
+                    <td class="fw-semibold text-dark">${{ "%.2f"|format(invoice.subtotal) }}</td>
+                </tr>
+                <tr>
+                    <td class="text-muted">GST / Sales Tax ({{ invoice.tax_rate }}%):</td>
+                    <td class="fw-semibold text-dark">${{ "%.2f"|format(invoice.tax_amount) }}</td>
+                </tr>
+                {% if invoice.discount_amount > 0 %}
+                <tr>
+                    <td class="text-muted">Commercial Discount:</td>
+                    <td class="fw-semibold text-danger">-${{ "%.2f"|format(invoice.discount_amount) }}</td>
+                </tr>
+                {% endif %}
+                <tr class="border-top">
+                    <td class="h5 fw-bold text-dark pt-2">Grand Total:</td>
+                    <td class="h5 fw-bold text-success pt-2">${{ "%.2f"|format(invoice.grand_total) }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Signatures & Footer -->
+    <div class="row pt-4 border-top mt-4 text-center text-sm-start align-items-end">
+        <div class="col-sm-6 mb-3 mb-sm-0">
+            <div class="invoice-stamp">
+                <i class="fa-solid fa-stamp text-primary me-2"></i>
+                <span class="small fw-bold text-uppercase">ElectroVault Verified Official Dispatch</span>
+            </div>
+        </div>
+        <div class="col-sm-6 text-sm-end">
+            <div class="border-bottom d-inline-block pb-1 px-4 mb-1">
+                <span class="font-monospace small text-muted">Authorized Signature</span>
+            </div>
+            <div class="text-muted small">Authorized Cashier / Store Manager</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

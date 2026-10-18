@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard & Inventory Dynamics - ElectroVault{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h2 class="h3 fw-bold mb-1">Inventory Dynamics & Operations</h2>
+        <p class="text-muted small mb-0">
+            Real-time stock monitoring, inward supplier shipments, and sales billing terminal.
+        </p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a href="{{ url_for('billing') }}" class="btn btn-success shadow-sm">
+            <i class="fa-solid fa-cash-register me-1"></i> New Sales Bill (Outward)
+        </a>
+        <a href="{{ url_for('restock_item') }}" class="btn btn-primary shadow-sm">
+            <i class="fa-solid fa-dolly me-1"></i> Restock Stock (Inward)
+        </a>
+        <a href="{{ url_for('add_new_item') }}" class="btn btn-outline-secondary shadow-sm">
+            <i class="fa-solid fa-plus me-1"></i> Add New SKU
+        </a>
+    </div>
+</div>
+
+<!-- KPI Stat Cards Row -->
+<div class="row g-3 mb-4">
+    <!-- Total SKUs -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-card h-100 p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="stat-label">Active Catalog</div>
+                    <div class="stat-val text-dark mt-1">{{ stats.total_skus }}</div>
+                    <div class="text-muted small mt-1">
+                        <i class="fa-solid fa-boxes-stacked text-primary me-1"></i> {{ stats.total_units }} total units in stock
+                    </div>
+                </div>
+                <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                    <i class="fa-solid fa-cubes"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inventory Valuation -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-card stat-info h-100 p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="stat-label">Inventory Valuation</div>
+                    <div class="stat-val text-dark mt-1">${{ "%.2f"|format(stats.total_retail_valuation) }}</div>
+                    <div class="text-muted small mt-1">
+                        Cost basis: ${{ "%.2f"|format(stats.total_cost_valuation) }}
+                    </div>
+                </div>
+                <div class="stat-icon bg-info bg-opacity-10 text-info">
+                    <i class="fa-solid fa-sack-dollar"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Low Stock Alert -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-card {% if stats.low_stock_count > 0 %}stat-danger{% else %}stat-success{% endif %} h-100 p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="stat-label">Stock Status Alerts</div>
+                    <div class="stat-val {% if stats.low_stock_count > 0 %}text-danger{% else %}text-success{% endif %} mt-1">
+                        {{ stats.low_stock_count }}
+                    </div>
+                    <div class="text-muted small mt-1">
+                        {% if stats.low_stock_count > 0 %}
+                        <a href="{{ url_for('inventory_list', status='low_stock') }}" class="text-danger fw-semibold text-decoration-none">
+                            <i class="fa-solid fa-triangle-exclamation me-1"></i> Requires replenishment
+                        </a>
+                        {% else %}
+                        <span class="text-success"><i class="fa-solid fa-check-circle me-1"></i> All stock healthy</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="stat-icon {% if stats.low_stock_count > 0 %}bg-danger bg-opacity-10 text-danger{% else %}bg-success bg-opacity-10 text-success{% endif %}">
+                    <i class="fa-solid fa-bell"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gross Sales Revenue -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-card stat-success h-100 p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="stat-label">Billed Revenue</div>
+                    <div class="stat-val text-dark mt-1">${{ "%.2f"|format(stats.gross_revenue) }}</div>
+                    <div class="text-muted small mt-1">
+                        <i class="fa-solid fa-receipt text-success me-1"></i> {{ stats.total_invoices }} customer invoices
+                    </div>
+                </div>
+                <div class="stat-icon bg-success bg-opacity-10 text-success">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Middle Section: Low Stock Dynamic Alerts + Category Dynamics -->
+<div class="row g-4 mb-4">
+    <!-- Low Stock Items Alert Card -->
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>
+                    <i class="fa-solid fa-triangle-exclamation text-warning me-2"></i>
+                    <strong>Critical Reorder Attention Needed</strong>
+                </span>
+                <span class="badge bg-danger rounded-pill">{{ low_stock_items|length }} Items</span>
+            </div>
+            <div class="card-body p-0">
+                {% if low_stock_items %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Item / SKU</th>
+                                <th>Category</th>
+                                <th class="text-center">Stock / Min</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for itm in low_stock_items %}
+                            <tr>
+                                <td>
+                                    <div class="fw-bold text-dark">{{ itm.name }}</div>
+                                    <div class="text-muted small"><code>{{ itm.sku }}</code></div>
+                                </td>
+                                <td><span class="badge bg-light text-dark border">{{ itm.category }}</span></td>
+                                <td class="text-center">
+                                    <span class="badge {% if itm.quantity == 0 %}badge-stock-out{% else %}badge-stock-low{% endif %} px-2 py-1">
+                                        {{ itm.quantity }} / {{ itm.min_threshold }} {{ itm.unit }}
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <a href="{{ url_for('restock_item', item_id=itm.id) }}" class="btn btn-sm btn-outline-success">
+                                        <i class="fa-solid fa-plus me-1"></i> Restock
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="p-4 text-center text-muted">
+                    <i class="fa-solid fa-circle-check text-success fa-3x mb-2"></i>
+                    <p class="mb-0">Excellent! All electrical equipment inventory is above minimum threshold levels.</p>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-footer bg-white border-top text-end py-2">
+                <a href="{{ url_for('inventory_list') }}" class="small text-decoration-none fw-semibold">
+                    View Full Warehouse Inventory <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Dynamics & Breakdown -->
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>
+                    <i class="fa-solid fa-chart-pie text-primary me-2"></i>
+                    <strong>Category Valuation & Stock Distribution</strong>
+                </span>
+                <span class="badge bg-primary rounded-pill">{{ categories|length }} Segments</span>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-column gap-3">
+                    {% for cat in categories %}
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center small mb-1">
+                            <span class="fw-semibold text-dark">{{ cat.category }}</span>
+                            <span class="text-muted">
+                                {{ cat.item_count }} SKUs &bull; {{ cat.units }} Units &bull; 
+                                <strong class="text-dark">${{ "%.2f"|format(cat.category_value or 0) }}</strong>
+                            </span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            {% set pct = ((cat.category_value or 0) / (stats.total_retail_valuation or 1) * 100)|round(1) %}
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{ pct }}%;"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="card-footer bg-white border-top py-2 d-flex justify-content-between align-items-center small">
+                <span class="text-muted">Electrical Goods: Fans, AC's, Lights, Switchgear, Cables</span>
+                <a href="{{ url_for('inventory_list') }}" class="fw-semibold text-decoration-none">Filter by category <i class="fa-solid fa-filter ms-1"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Section: Recent Invoices & Recent Ledger Audit -->
+<div class="row g-4">
+    <!-- Recent Customer Invoices (Stock Outward Bills) -->
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>
+                    <i class="fa-solid fa-receipt text-success me-2"></i>
+                    <strong>Recent Customer Invoices (Dispatches)</strong>
+                </span>
+                <a href="{{ url_for('invoice_list') }}" class="btn btn-sm btn-outline-secondary">All Invoices</a>
+            </div>
+            <div class="card-body p-0">
+                {% if recent_invoices %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Invoice #</th>
+                                <th>Customer</th>
+                                <th>Total</th>
+                                <th>Billed By</th>
+                                <th class="text-end">View / Print</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for inv in recent_invoices %}
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for('view_invoice', invoice_id=inv.id) }}" class="fw-bold text-decoration-none">
+                                        {{ inv.invoice_number }}
+                                    </a>
+                                    <div class="text-muted small" style="font-size: 0.75rem;">{{ inv.created_at[:16] }}</div>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold text-dark">{{ inv.customer_name }}</div>
+                                    <span class="badge bg-light text-secondary border" style="font-size: 0.72rem;">{{ inv.payment_method }}</span>
+                                </td>
+                                <td class="fw-bold text-success">${{ "%.2f"|format(inv.grand_total) }}</td>
+                                <td class="small text-muted">{{ inv.created_by_name }}</td>
+                                <td class="text-end">
+                                    <a href="{{ url_for('view_invoice', invoice_id=inv.id) }}" class="btn btn-sm btn-outline-primary" title="Print Bill">
+                                        <i class="fa-solid fa-file-invoice"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="p-4 text-center text-muted">
+                    <p class="mb-2">No customer invoices created yet.</p>
+                    <a href="{{ url_for('billing') }}" class="btn btn-sm btn-success">Create First Invoice</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Audit Trail Log -->
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>
+                    <i class="fa-solid fa-clock-rotate-left text-info me-2"></i>
+                    <strong>Real-time Inventory Activity Stream</strong>
+                </span>
+                <a href="{{ url_for('audit_logs') }}" class="btn btn-sm btn-outline-secondary">Full Ledger</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    {% for log in recent_logs %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3">
+                        <div class="d-flex align-items-start gap-2">
+                            <span class="badge {% if log.action_type in ['RESTOCK', 'INITIAL_STOCK', 'NEW_ITEM'] %}bg-success{% elif log.action_type == 'SALE' %}bg-primary{% else %}bg-secondary{% endif %} mt-1">
+                                {{ log.action_type }}
+                            </span>
+                            <div>
+                                <div class="fw-semibold text-dark small">{{ log.item_name }}</div>
+                                <div class="text-muted" style="font-size: 0.75rem;">
+                                    Ref: <code>{{ log.reference_id or 'N/A' }}</code> &bull; By: {{ log.user_name }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <span class="fw-bold {% if log.quantity_change > 0 %}text-success{% elif log.quantity_change < 0 %}text-danger{% else %}text-muted{% endif %}">
+                                {% if log.quantity_change > 0 %}+{% endif %}{{ log.quantity_change }}
+                            </span>
+                            <div class="text-muted" style="font-size: 0.72rem;">Stock: {{ log.new_stock }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

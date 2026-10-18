@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ElectroVault - Inventory & Billing System{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top no-print py-2">
+        <div class="container-fluid px-lg-4">
+            <a class="navbar-brand text-white" href="{{ url_for('dashboard') if current_user else url_for('login') }}">
+                <span class="p-2 rounded bg-primary d-inline-flex align-items-center justify-content-center shadow-sm">
+                    <i class="fa-solid fa-bolt text-warning fs-5"></i>
+                </span>
+                <span class="ms-1">Electro<strong class="text-primary-light">Vault</strong></span>
+                <span class="badge bg-secondary text-light fw-normal ms-2 small d-none d-sm-inline-block">Inventory & Billing</span>
+            </a>
+
+            {% if current_user %}
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navMain">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3 gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-white-50 {% if request.endpoint == 'dashboard' %}active text-white{% endif %}" href="{{ url_for('dashboard') }}">
+                            <i class="fa-solid fa-gauge me-1 text-info"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white-50 {% if request.endpoint == 'inventory_list' %}active text-white{% endif %}" href="{{ url_for('inventory_list') }}">
+                            <i class="fa-solid fa-boxes-stacked me-1 text-warning"></i> Inventory
+                            {% if low_stock_count > 0 %}
+                            <span class="badge bg-danger rounded-pill ms-1">{{ low_stock_count }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link text-white-50 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fa-solid fa-plus-circle me-1 text-success"></i> Stock Actions
+                        </a>
+                        <ul class="dropdown-menu shadow border-0 mt-1">
+                            <li>
+                                <a class="dropdown-item py-2" href="{{ url_for('add_new_item') }}">
+                                    <i class="fa-solid fa-plus text-primary me-2"></i> <strong>Add New Item</strong>
+                                    <div class="text-muted small ps-4">Register a new product / SKU</div>
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item py-2" href="{{ url_for('restock_item') }}">
+                                    <i class="fa-solid fa-dolly text-success me-2"></i> <strong>Restock Existing Item</strong>
+                                    <div class="text-muted small ps-4">Add stock with supplier purchase bill</div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2" href="{{ url_for('restock_history') }}">
+                                    <i class="fa-solid fa-file-invoice me-2 text-secondary"></i> Restock Bills History
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white-50 {% if request.endpoint == 'billing' %}active text-white{% endif %}" href="{{ url_for('billing') }}">
+                            <i class="fa-solid fa-cash-register me-1 text-success"></i> <strong>New Bill (Sale)</strong>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white-50 {% if request.endpoint in ['invoice_list', 'view_invoice'] %}active text-white{% endif %}" href="{{ url_for('invoice_list') }}">
+                            <i class="fa-solid fa-receipt me-1 text-light"></i> Invoices
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white-50 {% if request.endpoint == 'audit_logs' %}active text-white{% endif %}" href="{{ url_for('audit_logs') }}">
+                            <i class="fa-solid fa-clock-rotate-left me-1 text-white-50"></i> Audit Ledger
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white-50 {% if request.endpoint == 'users_list' %}active text-white{% endif %}" href="{{ url_for('users_list') }}">
+                            <i class="fa-solid fa-users-gear me-1 text-white-50"></i> Users
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-3">
+                    <div class="text-end d-none d-md-block text-white">
+                        <div class="fw-semibold small leading-tight">{{ current_user.full_name }}</div>
+                        <span class="badge bg-primary text-white badge-role">{{ current_user.role }}</span>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm text-nowrap" title="Secure Logout">
+                        <i class="fa-solid fa-arrow-right-from-bracket me-1"></i> Logout
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="flex-grow-1 py-4">
+        <div class="container-fluid px-lg-4">
+            <!-- Flash Message Alerts -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="no-print mb-4">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm d-flex align-items-center" role="alert">
+                                {% if category == 'success' %}
+                                    <i class="fa-solid fa-circle-check fs-5 me-2 text-success"></i>
+                                {% elif category == 'danger' %}
+                                    <i class="fa-solid fa-circle-exclamation fs-5 me-2 text-danger"></i>
+                                {% elif category == 'warning' %}
+                                    <i class="fa-solid fa-triangle-exclamation fs-5 me-2 text-warning"></i>
+                                {% else %}
+                                    <i class="fa-solid fa-circle-info fs-5 me-2 text-info"></i>
+                                {% endif %}
+                                <div class="flex-grow-1">{{ message }}</div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3 bg-white border-top no-print">
+        <div class="container-fluid px-lg-4 text-center text-muted small d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+            <div>
+                <strong>ElectroVault</strong> &copy; 2026. Industrial & Commercial Electrical Inventory Management.
+            </div>
+            <div>
+                <span class="badge bg-light text-dark border me-2"><i class="fa-brands fa-python text-primary me-1"></i> Flask 3.1</span>
+                <span class="badge bg-light text-dark border"><i class="fa-solid fa-shield-halved text-success me-1"></i> Secured Session Auth</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
